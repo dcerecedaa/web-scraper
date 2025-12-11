@@ -87,7 +87,18 @@ python -m visualization.data_analysis
 
 ---
 
-## 👤 Autor
+## ⭐ Soporte y Contribuciones
 
-David Cereceda Perez
+**Si te resulta útil este proyecto:**
+
+- 🌟 **Dale una estrella** en GitHub
+- 🛠️ **Haz un fork** y crea tu propia versión
+- 🐛 **Abre un issue** si encuentras bugs o quieres sugerir mejoras
+
+---
+
+## 👨‍💻 Autor
+
+**Desarrollado por David Cereceda**  
+🎓 **Desarrollador Fullstack** | Apasionado por la programación
 
