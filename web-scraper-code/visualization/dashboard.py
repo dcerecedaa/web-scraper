@@ -66,7 +66,7 @@ def show_metrics(df):
 
 def show_price_distribution(df):
     """Gráfico de distribución de precios"""
-    st.subheader("📊 Distribución de Precios")
+    st.subheader(" Distribución de Precios")
     
     fig = px.histogram(
         df, 
@@ -85,7 +85,7 @@ def show_price_distribution(df):
 
 def show_category_analysis(df):
     """Análisis por categoría"""
-    st.subheader("📂 Análisis por Categoría")
+    st.subheader("  Análisis por Categoría")
     
     col1, col2 = st.columns(2)
     
@@ -122,7 +122,7 @@ def show_category_analysis(df):
 def show_gender_comparison(df):
     """Comparación por género"""
     if 'genero' in df.columns:
-        st.subheader("👥 Comparación por Género")
+        st.subheader("  Comparación por Género")
         
         col1, col2 = st.columns(2)
         
@@ -153,7 +153,7 @@ def show_gender_comparison(df):
 
 def show_brand_analysis(df):
     """Análisis por marca"""
-    st.subheader("🏷️ Análisis por Marca")
+    st.subheader("  Análisis por Marca")
     
     if df['marca'].nunique() > 1:
         col1, col2 = st.columns(2)
@@ -185,7 +185,7 @@ def show_brand_analysis(df):
 
 def show_product_table(df):
     """Tabla de productos filtrable"""
-    st.subheader("🔍 Explorador de Productos")
+    st.subheader("  Explorador de Productos")
     
     # Filtros
     col1, col2, col3 = st.columns(3)
@@ -214,7 +214,7 @@ def show_product_table(df):
     )
     
     # Búsqueda por nombre
-    search_term = st.text_input('🔎 Buscar producto por nombre')
+    search_term = st.text_input('  Buscar producto por nombre')
     
     # Aplicar filtros
     filtered_df = df.copy()
@@ -270,7 +270,7 @@ def show_product_table(df):
     # Botón de descarga
     csv = filtered_df.to_csv(index=False).encode('utf-8-sig')
     st.download_button(
-        label="📥 Descargar resultados (CSV)",
+        label="  Descargar resultados (CSV)",
         data=csv,
         file_name=f"productos_filtrados_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.csv",
         mime="text/csv",
@@ -278,7 +278,7 @@ def show_product_table(df):
 
 def show_price_comparison(df):
     """Comparador de productos"""
-    st.subheader("⚖️ Comparador de Precios")
+    st.subheader("  Comparador de Precios")
     
     if 'categoria' in df.columns:
         selected_cat = st.selectbox('Selecciona una categoría para comparar', df['categoria'].unique())
@@ -312,31 +312,31 @@ def main():
     """Función principal del dashboard"""
     
     # Header
-    st.markdown('<h1 class="main-header">🛍️ Dashboard de Productos</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header">  Dashboard de Productos</h1>', unsafe_allow_html=True)
     
     # Cargar datos
     df = load_data()
     
     if df is None or df.empty:
-        st.warning("⚠️ No se encontraron datos. Ejecuta el scraper primero con `python main.py`")
-        st.info("💡 El scraper guardará los datos en `data/products.csv`")
+        st.warning("  No se encontraron datos. Ejecuta el scraper primero con `python main.py`")
+        st.info("  El scraper guardará los datos en `data/products.csv`")
         return
     
     # Sidebar
     with st.sidebar:
-        st.title("⚙️ Configuración")
+        st.title("  Configuración")
         st.write(f"**Total productos:** {len(df):,}")
         st.write(f"**Última actualización:** {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M')}")
         
         st.markdown("---")
         
         # Botón de recarga
-        if st.button("🔄 Recargar Datos"):
+        if st.button("  Recargar Datos"):
             st.cache_data.clear()
             st.rerun()
         
         st.markdown("---")
-        st.markdown("### 📊 Información")
+        st.markdown("### Información")
         st.markdown(f"""
         - **Marcas:** {df['marca'].nunique()}
         - **Categorías:** {df['categoria'].nunique()}
@@ -349,7 +349,7 @@ def main():
     st.markdown("---")
     
     # Tabs
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Análisis", "🔍 Explorador", "⚖️ Comparador", "📈 Estadísticas"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Análisis", "Explorador", "Comparador", "Estadísticas"])
     
     with tab1:
         show_price_distribution(df)
@@ -368,7 +368,7 @@ def main():
         show_brand_analysis(df)
         
         st.markdown("---")
-        st.subheader("📋 Resumen Estadístico")
+        st.subheader(" Resumen Estadístico")
         st.dataframe(df.describe(), use_container_width=True)
 
 if __name__ == "__main__":

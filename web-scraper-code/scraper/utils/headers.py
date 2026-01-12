@@ -9,7 +9,6 @@ USER_AGENTS = [
 ]
 
 def get_random_user_agent():
-    """Retorna un user agent aleatorio"""
     return random.choice(USER_AGENTS)
 
 def get_headers():

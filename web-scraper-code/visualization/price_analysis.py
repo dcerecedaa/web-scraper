@@ -1,8 +1,3 @@
-"""
-Análisis de precios de productos
-Funciones para generar gráficos y estadísticas
-"""
-
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -115,12 +110,12 @@ def generate_price_report(output_dir='data/reports'):
     
     df = load_products()
     if df is None:
-        print("❌ No se encontraron datos")
+        print(" No se encontraron datos")
         return
     
     # Estadísticas
     stats = get_price_statistics(df)
-    print("\n📊 Estadísticas de Precios:")
+    print("\n Estadísticas de Precios:")
     print(f"  Total productos: {stats['count']}")
     print(f"  Precio promedio: €{stats['mean']:.2f}")
     print(f"  Precio mediano: €{stats['median']:.2f}")
@@ -135,7 +130,7 @@ def generate_price_report(output_dir='data/reports'):
     if df['marca'].nunique() > 1:
         plot_brand_comparison(df, f"{output_dir}/brand_comparison.html")
     
-    print(f"\n✅ Reportes guardados en: {output_dir}/")
+    print(f"\n Reportes guardados en: {output_dir}/")
 
 if __name__ == "__main__":
     generate_price_report()

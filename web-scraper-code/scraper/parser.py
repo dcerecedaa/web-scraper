@@ -7,7 +7,6 @@ from scraper.config import BRAND_CONFIGS, GENERIC_SELECTORS, CATEGORY_KEYWORDS
 logger = logging.getLogger(__name__)
 
 class UniversalParser:
-    """Parser que se adapta automáticamente a diferentes estructuras de sitios"""
     
     def __init__(self, base_url):
         self.base_url = base_url
@@ -16,25 +15,21 @@ class UniversalParser:
         self.soup = None
     
     def _get_brand_config(self):
-        """Obtiene la configuración de la marca si existe"""
         for domain, config in BRAND_CONFIGS.items():
             if domain in self.domain:
-                logger.info(f"✅ Configuración encontrada para {config['name']}")
+                logger.info(f"  Configuración encontrada para {config['name']}")
                 return config
-        logger.info("🔍 Usando detección automática (marca no configurada)")
+        logger.info("  Usando detección automática (marca no configurada)")
         return None
     
     def parse_html(self, html):
-        """Convierte HTML a BeautifulSoup"""
         self.soup = BeautifulSoup(html, 'html.parser')
         return self.soup
     
     def find_categories(self, html=None):
-        """Encuentra todas las categorías de productos en la página principal"""
         if html:
             self.parse_html(html)
         
-        # Si existe config específica, usar esas categorías
         if self.brand_config and 'categories' in self.brand_config:
             categories = []
             for genero, urls in self.brand_config['categories'].items():
@@ -46,38 +41,31 @@ class UniversalParser:
                         'categoria': categoria,
                         'url': full_url
                     })
-            logger.info(f"📂 {len(categories)} categorías configuradas")
+            logger.info(f"  {len(categories)} categorías configuradas")
             return categories
         
-        # Detección automática
         return self._auto_detect_categories()
     
     def _auto_detect_categories(self):
-        """Detecta automáticamente las categorías navegando los enlaces"""
         categories = []
         seen_urls = set()
         
-        # Buscar enlaces que parezcan categorías
         links = self.soup.find_all('a', href=True)
         
         for link in links:
             href = link.get('href', '')
             text = link.get_text(strip=True).lower()
             
-            # Detectar género
             genero = self._detect_gender(text, href)
             if not genero:
                 continue
             
-            # Detectar categoría
             categoria = self._detect_category(text, href)
             if not categoria:
                 continue
             
-            # Construir URL completa
             full_url = urljoin(self.base_url, href)
             
-            # Evitar duplicados
             if full_url not in seen_urls:
                 seen_urls.add(full_url)
                 categories.append({
@@ -86,11 +74,10 @@ class UniversalParser:
                     'url': full_url
                 })
         
-        logger.info(f"🔍 {len(categories)} categorías detectadas automáticamente")
+        logger.info(f"  {len(categories)} categorías detectadas automáticamente")
         return categories
     
     def _detect_gender(self, text, url):
-        """Detecta el género basándose en palabras clave"""
         combined = f"{text} {url}".lower()
         for genero, keywords in CATEGORY_KEYWORDS['genero'].items():
             if any(kw in combined for kw in keywords):
@@ -98,7 +85,6 @@ class UniversalParser:
         return None
     
     def _detect_category(self, text, url):
-        """Detecta la categoría basándose en palabras clave"""
         combined = f"{text} {url}".lower()
         for categoria, keywords in CATEGORY_KEYWORDS['categoria'].items():
             if any(kw in combined for kw in keywords):
@@ -106,18 +92,15 @@ class UniversalParser:
         return None
     
     def _extract_category_from_url(self, url):
-        """Extrae el nombre de categoría de una URL"""
-        # Buscar patrones comunes
         patterns = [
-            r'/([^/]+?)(?:-l\d+)?\.html',  # /abrigos-l1055.html
-            r'/([^/]+)/?$',                 # /abrigos/
+            r'/([^/]+?)(?:-l\d+)?\.html',  
+            r'/([^/]+)/?$',                 
         ]
         
         for pattern in patterns:
             match = re.search(pattern, url.lower())
             if match:
                 categoria_raw = match.group(1)
-                # Intentar clasificar
                 for categoria, keywords in CATEGORY_KEYWORDS['categoria'].items():
                     if any(kw in categoria_raw for kw in keywords):
                         return categoria
@@ -125,7 +108,6 @@ class UniversalParser:
         return "General"
     
     def parse_products(self, html):
-        """Extrae todos los productos de una página"""
         self.parse_html(html)
         products = []
         
@@ -141,7 +123,7 @@ class UniversalParser:
             selectors.get('product_card', GENERIC_SELECTORS['product_card'])
         )
         
-        logger.info(f"🛍️  {len(product_cards)} productos encontrados en la página")
+        logger.info(f"  {len(product_cards)} productos encontrados en la página")
         
         for card in product_cards:
             try:
@@ -155,7 +137,6 @@ class UniversalParser:
         return products
     
     def _find_elements(self, selectors):
-        """Intenta encontrar elementos usando múltiples selectores"""
         if isinstance(selectors, str):
             selectors = [selectors]
         
@@ -170,7 +151,6 @@ class UniversalParser:
         return []
     
     def _extract_product_data(self, card, selectors):
-        """Extrae los datos de un producto"""
         product = {}
         
         # Nombre
@@ -200,16 +180,12 @@ class UniversalParser:
         else:
             product['imagen'] = None
         
-        # Marca (del dominio)
         product['marca'] = self.brand_config.get('name', self.domain) if self.brand_config else self.domain
         
         return product
     
     def _parse_price(self, price_text):
-        """Extrae el número del precio"""
-        # Remover símbolos y espacios
         price_clean = re.sub(r'[^\d,.]', '', price_text)
-        # Convertir comas a puntos
         price_clean = price_clean.replace(',', '.')
         
         try:

@@ -28,8 +28,7 @@ ENV/
 # Data files
 data/raw/*.csv
 data/processed/*.csv
-# Mantener el CSV principal para compartir
-# data/products.csv
+
 
 # Logs
 logs/*.log
@@ -49,10 +48,3 @@ Thumbs.db
 
 # Playwright
 playwright/.local-browsers/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Node (si usaste npm en algún momento)
-node_modules/
-package-lock.json
