@@ -42,7 +42,7 @@ web-scraper-code/
 ### 1. Clonar el repositorio
 
 ```bash
-git clone <tu-repositorio>
+git clone 
 cd web-scraper-code
 ```
 
