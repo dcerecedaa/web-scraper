@@ -225,13 +225,8 @@ Este proyecto está abierto a sugerencias y feedback. Si tienes ideas de mejora 
 
 Este scraper es para uso educativo. Asegúrate de respetar los términos de servicio de los sitios web que scrapes y el archivo `robots.txt`.
 
-## 📜 Derechos de uso
+## 📧 Contacto
 
-Este código es de visualización pública con fines demostrativos. Puedes explorar y aprender del código, pero **no está permitido su uso en proyectos comerciales o personales**. El propósito es mostrar habilidades técnicas y lógica de programación.
-
-## 👨‍💻 Autor
-
-David Cereceda Pérez
-[GitHub](https://github.com/dcerecedaa) | [LinkedIn](https://linkedin.com/in/david-cereceda-perez-3ba0962b6)
+Para preguntas o sugerencias, abre un issue en GitHub.
 
 ---
