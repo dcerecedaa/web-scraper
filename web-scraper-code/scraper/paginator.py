@@ -1,17 +1,37 @@
+"""
+Este archivo se mantiene por compatibilidad pero su funcionalidad
+ahora está integrada en parser.py
+
+Si tienes código que lo usa, puedes mantenerlo,
+pero el nuevo sistema no lo necesita.
+"""
+
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-from .config import BASE_URL
 
 def get_next_page(html, current_url):
-    soup = BeautifulSoup(html, "html.parser")
-    next_btn = soup.select_one("li.next a")
+    """
+    Encuentra el enlace a la siguiente página
+    NOTA: Esta función ya no se usa en el nuevo sistema
+    """
+    soup = BeautifulSoup(html, 'html.parser')
     
-    if not next_btn:
-        return None
+    # Intentar varios selectores comunes para "siguiente página"
+    next_selectors = [
+        'a.next',
+        'a[rel="next"]',
+        'a.pagination-next',
+        'button.load-more',
+        'a:contains("Siguiente")',
+        'a:contains("Next")'
+    ]
     
-    next_page = next_btn["href"]
+    for selector in next_selectors:
+        try:
+            next_link = soup.select_one(selector)
+            if next_link and next_link.get('href'):
+                return urljoin(current_url, next_link['href'])
+        except:
+            continue
     
-    if "catalogue" in current_url and not next_page.startswith("catalogue"):
-        return urljoin(current_url, next_page)
-    
-    return current_url.rsplit("/", 1)[0] + "/" + next_page
+    return None

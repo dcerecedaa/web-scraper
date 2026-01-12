@@ -1,104 +1,228 @@
-# Web Scraper de Productos
+# 🛍️ Scraper Universal de Productos
 
-Este proyecto es un **web scraper en Python** que extrae información de productos de sitios web de ejemplo como [Books to Scrape](http://books.toscrape.com/).  
-Incluye scraping completo con paginación, parseo de datos, almacenamiento en CSV y un módulo de visualización básica.
+Scraper inteligente y universal que funciona con **cualquier tienda online** (H&M, Zara, Pull&Bear, etc.) utilizando detección automática de categorías y productos.
 
----
+## ✨ Características
 
-## 📂 Estructura del proyecto
+- 🌐 **Universal**: Funciona con la mayoría de tiendas online
+- 🤖 **Detección Automática**: Identifica categorías y productos automáticamente
+- 🎯 **Configuración Híbrida**: Usa configuraciones específicas cuando están disponibles
+- 📊 **Dashboard Interactivo**: Visualiza y analiza los productos scrapeados
+- 🔄 **Manejo de JavaScript**: Usa Playwright para sitios dinámicos
+- 💾 **Almacenamiento Inteligente**: Guarda datos crudos y procesados
+- 🏷️ **Categorización**: Organiza por género (Hombre/Mujer) y categoría (Abrigos, Pantalones, etc.)
+
+## 📁 Estructura del Proyecto
 
 ```
-web-scraper/
-│
-├── scraper/                # Módulo principal de scraping
-│   ├── __init__.py
-│   ├── fetcher.py          # Descarga de HTML con requests
-│   ├── parser.py           # Parseo de HTML con BeautifulSoup
-│   ├── paginator.py        # Manejo de paginación
-│   ├── storage.py          # Guardado de datos en CSV
-│   └── config.py           # Configuración de URLs y selectores
-│
-├── data/                   # Carpeta donde se guardan los CSV de productos
-│   └── products.csv
-│
-├── visualization/          # Módulo de visualización y análisis
-│   ├── __init__.py
-│   └── data_analysis.py   # Análisis de datos con pandas y matplotlib/seaborn
-│
-└── main.py                 # Script principal que ejecuta el scraper
+web-scraper-code/
+├── data/
+│   ├── raw/                    # CSVs con timestamp
+│   ├── processed/              # Datos limpios
+│   └── products.csv            # CSV principal
+├── scraper/
+│   ├── config.py              # Configuración de marcas
+│   ├── fetcher.py             # Fetcher con Playwright
+│   ├── parser.py              # Parser universal
+│   ├── storage.py             # Almacenamiento
+│   └── utils/
+│       ├── headers.py         # User-agents
+│       └── retry.py           # Reintentos
+├── visualization/
+│   └── dashboard.py           # Dashboard Streamlit
+├── logs/                       # Logs de ejecución
+├── main.py                     # Script principal
+├── requirements.txt
+├── .env
+└── README.md
 ```
----
 
-## 🚀 Uso
+## 🚀 Instalación
 
-### 1. Ejecutar el scraper
+### 1. Clonar el repositorio
+
+```bash
+git clone <tu-repositorio>
+cd web-scraper-code
+```
+
+### 2. Crear entorno virtual
+
+```bash
+python -m venv venv
+
+# Windows
+venv\Scripts\activate
+
+# Linux/Mac
+source venv/bin/activate
+```
+
+### 3. Instalar dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Instalar navegadores de Playwright
+
+```bash
+playwright install chromium
+```
+
+## 💻 Uso
+
+### Scraper
+
+Ejecuta el scraper y sigue las instrucciones:
 
 ```bash
 python main.py
 ```
 
-- Scrapea todos los productos de la web configurada en `scraper/config.py`.
-- Guarda los datos en `data/products.csv` con las columnas:
+El programa te pedirá una URL. Ejemplos:
+- `https://www2.hm.com/`
+- `https://www.zara.com/es/`
+- `https://www.pullandbear.com/es/`
 
-```
-title, price, availability, image_url
-```
+El scraper:
+1. Analizará la página principal
+2. Detectará automáticamente las categorías
+3. Scrapeará todos los productos
+4. Los organizará por género y categoría
+5. Guardará los resultados en CSV
 
----
+### Dashboard de Visualización
 
-### 2. Analizar precios
+Para ver el dashboard interactivo:
 
 ```bash
-python -m visualization.data_analysis
+streamlit run visualization/dashboard.py
 ```
 
-- Carga los datos del CSV.
-- Muestra estadísticas básicas de precios.
-- Genera gráficos:
-  - Histograma de distribución de precios
-  - Boxplot para detectar valores extremos
-  - Grafico de pastel para saber que productos están en stock
+Esto abrirá una interfaz web con:
+- 📊 Gráficos de distribución de precios
+- 📂 Análisis por categorías
+- 👥 Comparación por género
+- 🔍 Explorador de productos con filtros
+- ⚖️ Comparador de precios
+- 📥 Exportación de resultados
+
+## ⚙️ Configuración
+
+### Variables de Entorno (.env)
+
+```env
+# Configuración del scraper
+MAX_RETRIES=3
+TIMEOUT=30000
+HEADLESS=true
+
+# Delays para evitar bloqueos
+MIN_DELAY=1
+MAX_DELAY=3
+
+# Límites
+MAX_PRODUCTS_PER_CATEGORY=100
+MAX_CATEGORIES=50
+```
+
+### Añadir Nuevas Marcas
+
+Edita `scraper/config.py` y añade la configuración de la marca:
+
+```python
+BRAND_CONFIGS = {
+    'tutienda.com': {
+        'name': 'Tu Tienda',
+        'categories': {
+            'Mujer': ['/mujer/abrigos', '/mujer/pantalones'],
+            'Hombre': ['/hombre/abrigos', '/hombre/pantalones']
+        },
+        'selectors': {
+            'product_card': '.product-item',
+            'product_name': 'h3.title',
+            'product_price': '.price',
+            'product_link': 'a.product-link',
+            'product_image': 'img.product-img',
+        }
+    }
+}
+```
+
+## 📊 Formato del CSV
+
+El CSV generado contiene las siguientes columnas:
+
+| Columna   | Descripción                    | Ejemplo              |
+|-----------|--------------------------------|----------------------|
+| marca     | Nombre de la marca             | H&M                  |
+| genero    | Género del producto            | Mujer                |
+| categoria | Categoría del producto         | Abrigos              |
+| nombre    | Nombre del producto            | Chaqueta vaquera     |
+| precio    | Precio en euros                | 39.99                |
+| url       | URL del producto               | https://...          |
+| imagen    | URL de la imagen               | https://...          |
+
+## 🛠️ Solución de Problemas
+
+### El scraper no encuentra productos
+
+1. Verifica que la URL sea correcta
+2. Algunos sitios bloquean scrapers → cambia `HEADLESS=false` en `.env`
+3. Revisa los logs en `logs/scraper_XXXXXX.log`
+
+### Error de Playwright
+
+```bash
+# Reinstalar navegadores
+playwright install chromium --force
+```
+
+### El dashboard no muestra datos
+
+Asegúrate de haber ejecutado el scraper primero:
+```bash
+python main.py
+```
+
+## 🎯 Marcas Soportadas
+
+### Preconfiguradas
+- ✅ H&M
+- ✅ Zara
+
+### Detección Automática
+El scraper intentará detectar automáticamente la estructura de cualquier otra tienda.
+
+## 📝 Logs
+
+Los logs se guardan en `logs/` con el formato:
+```
+logs/scraper_20260112_143025.log
+```
+
+## 🤝 Contribuir
+
+¿Quieres añadir configuración para una nueva marca?
+
+1. Edita `scraper/config.py`
+2. Añade los selectores CSS correctos
+3. Prueba el scraper
+4. Envía un Pull Request
+
+## 🔗 Enlaces Útiles
+
+- [Documentación de Playwright](https://playwright.dev/python/)
+- [Documentación de BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
+- [Documentación de Streamlit](https://docs.streamlit.io/)
+
+## ⚠️ Disclaimer
+
+Este scraper es para uso educativo. Asegúrate de respetar los términos de servicio de los sitios web que scrapes y el archivo `robots.txt`.
+
+## 📧 Contacto
+
+Para preguntas o sugerencias, abre un issue en GitHub.
 
 ---
-
-## 🔧 Personalización
-
-- Cambiar URL base o selectores: `scraper/config.py`
-- Guardar datos en otro formato: editar `scraper/storage.py`
-- Añadir más análisis: agregar scripts en `visualization/`
-
----
-
-## 📈 Posibles mejoras
-
-- Soporte para páginas con JavaScript usando Selenium o Playwright.
-- Descarga automática de imágenes desde `image_url`.
-- Análisis de disponibilidad y categorización de productos.
-- Alertas automáticas para productos out-of-stock o con precios altos.
-- Visualización avanzada con dashboards (Plotly, Dash, Power BI, Tableau).
-
----
-
-## 📝 Notas
-
-- Este proyecto se hizo como ejemplo de **web scraping**.
-- Está pensado para webs de prueba o sitios donde esté permitido el scraping.
-- Evitar usarlo en webs con protecciones fuertes o restricciones legales.
-
----
-
-## ⭐ Soporte y Contribuciones
-
-**Si te resulta útil este proyecto:**
-
-- 🌟 **Dale una estrella** en GitHub
-- 🛠️ **Haz un fork** y crea tu propia versión
-- 🐛 **Abre un issue** si encuentras bugs o quieres sugerir mejoras
-
----
-
-## 👨‍💻 Autor
-
-**Desarrollado por David Cereceda**  
-🎓 **Desarrollador Fullstack** | Apasionado por la programación
-
