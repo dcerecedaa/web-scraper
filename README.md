@@ -32,6 +32,7 @@ web-scraper-code/
 ├── scraper/
 │   ├── config.py         # Configuración de marcas
 │   ├── fetcher.py        # Fetcher con Playwright
+│   ├── paginator.py
 │   ├── parser.py         # Parser universal
 │   ├── storage.py        # Almacenamiento
 │   └── utils/
@@ -39,7 +40,6 @@ web-scraper-code/
 │       └── retry.py      # Reintentos
 ├── visualization/
 │   └── dashboard.py      # Dashboard Streamlit
-├── logs/                 # Logs de ejecución
 ├── main.py               # Script principal
 ├── requirements.txt
 ├── .env
