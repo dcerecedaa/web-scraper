@@ -1,23 +1,18 @@
 import sys
 import logging
 from datetime import datetime
-from colorama import Fore, Style, init
-from tqdm import tqdm
 from scraper.fetcher import get_page, close_fetcher
 from scraper.parser import UniversalParser
 from scraper.storage import save_csv
-from scraper.config import MAX_PRODUCTS_PER_CATEGORY, MAX_CATEGORIES
 
-init(autoreset=True)
 
-# Configurar logging
 def setup_logging():
     log_dir = 'logs'
     import os
     os.makedirs(log_dir, exist_ok=True)
-    
+
     log_filename = f'logs/scraper_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
-    
+
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s [%(levelname)s] %(message)s',
@@ -28,157 +23,147 @@ def setup_logging():
     )
     return log_filename
 
+
 def print_banner():
-    print(f"\n{Fore.CYAN}{'='*60}")
-    print(f"{Fore.CYAN}🛍️  SCRAPER UNIVERSAL DE PRODUCTOS")
-    print(f"{Fore.CYAN}{'='*60}{Style.RESET_ALL}\n")
+    print("\n" + "=" * 60)
+    print("SCRAPER UNIVERSAL DE PRODUCTOS")
+    print("=" * 60 + "\n")
+
 
 def get_user_url():
-    print(f"{Fore.YELLOW}  Introduce la URL de la tienda que quieres scrapear:{Style.RESET_ALL}")
-    print(f"{Fore.WHITE}   Ejemplo: https://www2.hm.com/")
-    print(f"{Fore.WHITE}   Ejemplo: https://www.zara.com/es/\n")
-    
-    url = input(f"{Fore.GREEN}➜ URL: {Style.RESET_ALL}").strip()
-    
+    print("Introduce la URL que quieres scrapear:")
+
+    url = input("URL: ").strip()
+
     if not url.startswith('http'):
         url = 'https://' + url
-    
+
     return url
 
-def scrape_category(parser, category_info, all_products):
-    genero = category_info['genero']
-    categoria = category_info['categoria']
-    url = category_info['url']
-    
-    print(f"\n{Fore.BLUE}  Scrapeando: {genero} → {categoria}{Style.RESET_ALL}")
-    
-    try:
-        html = get_page(url)
-        if not html:
-            return
-        
-        products = parser.parse_products(html)
-        
-        for product in products:
-            product['genero'] = genero
-            product['categoria'] = categoria
-        
-        all_products.extend(products)
-        print(f"{Fore.GREEN} {len(products)} productos encontrados{Style.RESET_ALL}")
-        
-    except Exception as e:
-        print(f"{Fore.RED} Error en {categoria}: {e}{Style.RESET_ALL}")
-        logging.error(f"Error scrapeando {url}: {e}")
+
+def extract_category_from_url(url):
+    url_lower = url.lower()
+
+    genero = "Sin clasificar"
+    if any(w in url_lower for w in ['mujer', 'woman', 'women', 'femme']):
+        genero = "Mujer"
+    elif any(w in url_lower for w in ['hombre', 'man', 'men', 'homme']):
+        genero = "Hombre"
+    elif any(w in url_lower for w in ['niño', 'niña', 'kids', 'children']):
+        genero = "Niños"
+
+    categoria = "General"
+    if any(w in url_lower for w in ['pantalon', 'pants', 'trousers', 'jeans']):
+        categoria = "Pantalones"
+    elif any(w in url_lower for w in ['abrigo', 'chaqueta', 'coat', 'jacket']):
+        categoria = "Abrigos"
+    elif any(w in url_lower for w in ['camiseta', 't-shirt', 'tshirt', 'top']):
+        categoria = "Camisetas"
+    elif any(w in url_lower for w in ['vestido', 'dress']):
+        categoria = "Vestidos"
+    elif any(w in url_lower for w in ['falda', 'skirt']):
+        categoria = "Faldas"
+    elif any(w in url_lower for w in ['sudadera', 'hoodie', 'sweatshirt']):
+        categoria = "Sudaderas"
+    elif any(w in url_lower for w in ['zapato', 'shoe', 'sneaker']):
+        categoria = "Zapatos"
+
+    return genero, categoria
+
 
 def run_scraper():
     log_file = setup_logging()
     print_banner()
-    
-    # Obtener URL del usuario
-    base_url = get_user_url()
-    
-    print(f"\n{Fore.CYAN}  Iniciando scraper para: {base_url}{Style.RESET_ALL}")
-    print(f"{Fore.WHITE}  Log guardado en: {log_file}{Style.RESET_ALL}\n")
-    
+
+    url = get_user_url()
+    print(f"Iniciando scraper para: {url}")
+    print(f"Log guardado en: {log_file}\n")
+
     all_products = []
-    
+
     try:
-        # Inicializar parser
-        parser = UniversalParser(base_url)
-        
-        # Obtener página principal
-        print(f"{Fore.YELLOW}  Analizando página principal...{Style.RESET_ALL}")
-        home_html = get_page(base_url)
-        
-        if not home_html:
-            print(f"{Fore.RED}  No se pudo cargar la página principal{Style.RESET_ALL}")
+        parser = UniversalParser(url)
+
+        genero, categoria = extract_category_from_url(url)
+        print(f"Clasificación detectada: {genero} -> {categoria}\n")
+
+        print("Cargando página.")
+        html = get_page(url)
+
+        if not html:
+            print("No se pudo cargar la página")
             return
-        
-        # Encontrar todas las categorías
-        categories = parser.find_categories(home_html)
-        
-        if not categories:
-            print(f"{Fore.YELLOW}  No se encontraron categorías automáticamente{Style.RESET_ALL}")
-            print(f"{Fore.YELLOW}   Intentando scrapear la página principal...{Style.RESET_ALL}")
-            
-            products = parser.parse_products(home_html)
-            for product in products:
-                product['genero'] = 'Sin clasificar'
-                product['categoria'] = 'General'
-            all_products.extend(products)
-        else:
-            print(f"\n{Fore.GREEN}{len(categories)} categorías detectadas{Style.RESET_ALL}")
-            
-            # Limitar categorías si hay demasiadas
-            if len(categories) > MAX_CATEGORIES:
-                print(f"{Fore.YELLOW}Limitando a {MAX_CATEGORIES} categorías{Style.RESET_ALL}")
-                categories = categories[:MAX_CATEGORIES]
-            
-            # Mostrar resumen de categorías
-            print(f"\n{Fore.CYAN}Categorías a scrapear:{Style.RESET_ALL}")
-            generos = {}
-            for cat in categories:
-                genero = cat['genero']
-                if genero not in generos:
-                    generos[genero] = []
-                generos[genero].append(cat['categoria'])
-            
-            for genero, cats in generos.items():
-                print(f"  • {genero}: {', '.join(set(cats))}")
-            
-            # Preguntar si continuar
-            print(f"\n{Fore.YELLOW}¿Continuar con el scraping? (s/n): {Style.RESET_ALL}", end='')
-            response = input().strip().lower()
-            
-            if response != 's':
-                print(f"{Fore.RED}Scraping cancelado{Style.RESET_ALL}")
-                return
-            
-            # Scrapear cada categoría
-            for category_info in tqdm(categories, desc="Progreso total", colour='green'):
-                scrape_category(parser, category_info, all_products)
-                
-                # Limitar productos por categoría
-                if len(all_products) > MAX_PRODUCTS_PER_CATEGORY * len(categories):
-                    print(f"\n{Fore.YELLOW}Límite de productos alcanzado{Style.RESET_ALL}")
-                    break
-        
-        # Guardar resultados
-        print(f"\n{Fore.CYAN}Guardando resultados...{Style.RESET_ALL}")
-        
+
+        print("Buscando productos...")
+        products = parser.parse_products(html)
+
+        if not products:
+            print("No se encontraron productos en esta página")
+            return
+
+        for product in products:
+            product['genero'] = genero
+            product['categoria'] = categoria
+
+        all_products.extend(products)
+        print(f"{len(products)} productos encontrados")
+
+        response = input("\n¿Scrapear otra URL? (s/n): ").strip().lower()
+
+        while response == 's':
+            url = input("Nueva URL: ").strip()
+            if not url.startswith('http'):
+                url = 'https://' + url
+
+            genero, categoria = extract_category_from_url(url)
+            html = get_page(url)
+
+            if html:
+                products = parser.parse_products(html)
+                for product in products:
+                    product['genero'] = genero
+                    product['categoria'] = categoria
+                all_products.extend(products)
+                print(f"{len(products)} productos encontrados (Total: {len(all_products)})")
+
+            response = input("¿Scrapear otra URL? (s/n): ").strip().lower()
+
         if not all_products:
-            print(f"{Fore.RED}No se encontraron productos{Style.RESET_ALL}")
+            print("No se encontraron productos")
             return
-        
-        brand_name = parser.brand_config.get('name', parser.domain) if parser.brand_config else parser.domain
-        filepath = save_csv(all_products, brand_name.replace(' ', '_'))
-        
-        # Resumen final
-        print(f"\n{Fore.GREEN}{'='*60}")
-        print(f"  SCRAPING COMPLETADO")
-        print(f"{'='*60}{Style.RESET_ALL}")
-        print(f"\n{Fore.CYAN}  Resumen:{Style.RESET_ALL}")
-        print(f"  • Total productos: {Fore.GREEN}{len(all_products)}{Style.RESET_ALL}")
-        print(f"  • Archivo principal: {Fore.BLUE}{filepath}{Style.RESET_ALL}")
-        print(f"  • Log: {Fore.BLUE}{log_file}{Style.RESET_ALL}")
-        
-        # Desglose por categoría
+
+        brand_name = parser.domain.replace('www.', '').replace('www2.', '').split('.')[0]
+        filepath = save_csv(all_products, brand_name)
+
+        print("\n" + "=" * 60)
+        print("SCRAPING COMPLETADO")
+        print("=" * 60)
+        print(f"\nTotal productos: {len(all_products)}")
+        print(f"Archivo generado: {filepath}")
+        print(f"Log: {log_file}")
+
         from collections import Counter
-        categorias_count = Counter([p.get('categoria', 'Sin categoría') for p in all_products])
-        print(f"\n{Fore.CYAN}  Por categoría:{Style.RESET_ALL}")
+
+        categorias_count = Counter(p.get('categoria', 'Sin categoría') for p in all_products)
+        print("\nPor categoría:")
         for cat, count in categorias_count.most_common():
-            print(f"  • {cat}: {count}")
-        
+            print(f"  {cat}: {count}")
+
+        generos_count = Counter(p.get('genero', 'Sin clasificar') for p in all_products)
+        print("\nPor género:")
+        for gen, count in generos_count.most_common():
+            print(f"  {gen}: {count}")
+
     except KeyboardInterrupt:
-        print(f"\n\n{Fore.RED}  Scraping interrumpido por el usuario{Style.RESET_ALL}")
+        print("\nProceso interrumpido por el usuario")
     except Exception as e:
-        print(f"\n{Fore.RED}  Error fatal: {e}{Style.RESET_ALL}")
+        print(f"\nError fatal: {e}")
         logging.error(f"Error fatal: {e}", exc_info=True)
     finally:
-        # Cerrar navegador
-        print(f"\n{Fore.YELLOW}  Cerrando navegador...{Style.RESET_ALL}")
+        print("\nCerrando fetcher.")
         close_fetcher()
-        print(f"{Fore.GREEN}  Proceso finalizado{Style.RESET_ALL}\n")
+        print("Proceso finalizado\n")
+
 
 if __name__ == "__main__":
     run_scraper()
