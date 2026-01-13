@@ -63,8 +63,8 @@ python main.py
 Solo funcionan URLs específicas de secciones o categorías, no la homepage de la tienda.
 
 **Ejemplos de URLs válidas:**
-- `https://nude-project.com/es/collections/new-arrivals-hoodies-sweatshirts`
-- `https://nude-project.com/es/collections/new-arrivals-t-shirts`
+- `https://la-tienda.com/es/collections/new-arrivals-hoodies-sweatshirts`
+- `https://la-tienda.com/es/collections/new-arrivals-t-shirts`
 
 **Ejemplos de URLs que no funcionarán:**
 - `https://nude-project.com/`
