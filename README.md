@@ -2,6 +2,12 @@
 
 Scraper inteligente y universal que funciona con **cualquier tienda online** (H&M, Zara, Pull&Bear, etc.) utilizando detección automática de categorías y productos.
 
+> ⚠️ **Nota:** Este proyecto está diseñado como demostración de habilidades técnicas y lógica aplicada.  
+> No pretende ser un sistema de scraping profesional ni listo para producción.  
+> El proyecto sigue recibiendo actualizaciones y mejoras; actualmente está en desarrollo.
+
+---
+
 ## ✨ Características
 
 - 🌐 **Universal**: Funciona con la mayoría de tiendas online
@@ -12,6 +18,8 @@ Scraper inteligente y universal que funciona con **cualquier tienda online** (H&
 - 💾 **Almacenamiento Inteligente**: Guarda datos crudos y procesados
 - 🏷️ **Categorización**: Organiza por género (Hombre/Mujer) y categoría (Abrigos, Pantalones, etc.)
 
+---
+
 ## 📁 Estructura del Proyecto
 
 ```
@@ -21,33 +29,33 @@ web-scraper-code/
 │   ├── processed/              # Datos limpios
 │   └── products.csv            # CSV principal
 ├── scraper/
-│   ├── config.py              # Configuración de marcas
-│   ├── fetcher.py             # Fetcher con Playwright
-│   ├── parser.py              # Parser universal
-│   ├── storage.py             # Almacenamiento
+│   ├── config.py               # Configuración de marcas
+│   ├── fetcher.py              # Fetcher con Playwright
+│   ├── parser.py               # Parser universal
+│   ├── storage.py              # Almacenamiento
 │   └── utils/
-│       ├── headers.py         # User-agents
-│       └── retry.py           # Reintentos
+│       ├── headers.py          # User-agents
+│       └── retry.py            # Reintentos
 ├── visualization/
-│   └── dashboard.py           # Dashboard Streamlit
-├── logs/                       # Logs de ejecución
-├── main.py                     # Script principal
+│   └── dashboard.py            # Dashboard Streamlit
+├── logs/                        # Logs de ejecución
+├── main.py                      # Script principal
 ├── requirements.txt
 ├── .env
 └── README.md
 ```
 
+---
+
 ## 🚀 Instalación
 
 ### 1. Clonar el repositorio
-
 ```bash
-git clone 
+git clone <url_del_repo>
 cd web-scraper-code
 ```
 
 ### 2. Crear entorno virtual
-
 ```bash
 python -m venv venv
 
@@ -59,27 +67,25 @@ source venv/bin/activate
 ```
 
 ### 3. Instalar dependencias
-
 ```bash
 pip install -r requirements.txt
 ```
 
 ### 4. Instalar navegadores de Playwright
-
 ```bash
 playwright install chromium
 ```
+
+---
 
 ## 💻 Uso
 
 ### Scraper
 
 Ejecuta el scraper y sigue las instrucciones:
-
 ```bash
 python main.py
 ```
-
 El programa te pedirá una URL. Ejemplos:
 - `https://www2.hm.com/`
 - `https://www.zara.com/es/`
@@ -95,11 +101,9 @@ El scraper:
 ### Dashboard de Visualización
 
 Para ver el dashboard interactivo:
-
 ```bash
 streamlit run visualization/dashboard.py
 ```
-
 Esto abrirá una interfaz web con:
 - 📊 Gráficos de distribución de precios
 - 📂 Análisis por categorías
@@ -108,10 +112,11 @@ Esto abrirá una interfaz web con:
 - ⚖️ Comparador de precios
 - 📥 Exportación de resultados
 
+---
+
 ## ⚙️ Configuración
 
 ### Variables de Entorno (.env)
-
 ```env
 # Configuración del scraper
 MAX_RETRIES=3
@@ -130,7 +135,6 @@ MAX_CATEGORIES=50
 ### Añadir Nuevas Marcas
 
 Edita `scraper/config.py` y añade la configuración de la marca:
-
 ```python
 BRAND_CONFIGS = {
     'tutienda.com': {
@@ -150,9 +154,9 @@ BRAND_CONFIGS = {
 }
 ```
 
-## 📊 Formato del CSV
+---
 
-El CSV generado contiene las siguientes columnas:
+## 📊 Formato del CSV
 
 | Columna   | Descripción                    | Ejemplo              |
 |-----------|--------------------------------|----------------------|
@@ -164,27 +168,28 @@ El CSV generado contiene las siguientes columnas:
 | url       | URL del producto               | https://...          |
 | imagen    | URL de la imagen               | https://...          |
 
+---
+
 ## 🛠️ Solución de Problemas
 
 ### El scraper no encuentra productos
-
 1. Verifica que la URL sea correcta
 2. Algunos sitios bloquean scrapers → cambia `HEADLESS=false` en `.env`
 3. Revisa los logs en `logs/scraper_XXXXXX.log`
 
 ### Error de Playwright
-
 ```bash
 # Reinstalar navegadores
 playwright install chromium --force
 ```
 
 ### El dashboard no muestra datos
-
 Asegúrate de haber ejecutado el scraper primero:
 ```bash
 python main.py
 ```
+
+---
 
 ## 🎯 Marcas Soportadas
 
@@ -195,6 +200,8 @@ python main.py
 ### Detección Automática
 El scraper intentará detectar automáticamente la estructura de cualquier otra tienda.
 
+---
+
 ## 📝 Logs
 
 Los logs se guardan en `logs/` con el formato:
@@ -202,36 +209,33 @@ Los logs se guardan en `logs/` con el formato:
 logs/scraper_20260112_143025.log
 ```
 
-## 🤝 Contribuir
-
-¿Quieres añadir configuración para una nueva marca?
-
-1. Edita `scraper/config.py`
-2. Añade los selectores CSS correctos
-3. Prueba el scraper
-4. Envía un Pull Request
-
-## 🔗 Enlaces Útiles
-
-- [Documentación de Playwright](https://playwright.dev/python/)
-- [Documentación de BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
-- [Documentación de Streamlit](https://docs.streamlit.io/)
+---
 
 ## 🤝 Contribuciones
 
-Este proyecto está abierto a sugerencias y feedback. Si tienes ideas de mejora o encuentras algún bug, no dudes en abrir un issue.
+Este proyecto está abierto a sugerencias y feedback. El código sigue recibiendo actualizaciones y mejoras.
+
+---
 
 ## ⚠️ Disclaimer
 
-Este scraper es para uso educativo. Asegúrate de respetar los términos de servicio de los sitios web que scrapes y el archivo `robots.txt`.
+Este scraper es para fines educativos y de demostración. Asegúrate de respetar los términos de servicio de los sitios web que scrapes y el archivo `robots.txt`.
+
+---
 
 ## 📜 Derechos de uso
 
-Este código es de visualización pública con fines demostrativos. Puedes explorar y aprender del código, pero **no está permitido su uso en proyectos comerciales o personales**. El propósito es mostrar habilidades técnicas y lógica de programación.
+Todo el código está disponible únicamente con fines **educativos y demostrativos**.  
+No se permite su uso en proyectos comerciales, personales o cualquier otro uso fuera de aprendizaje y exploración técnica.
+
+---
 
 ## 👨‍💻 Autor
 
-David Cereceda Pérez
+David Cereceda Pérez  
 [GitHub](https://github.com/dcerecedaa) | [LinkedIn](https://linkedin.com/in/david-cereceda-perez-3ba0962b6)
 
 ---
+
+> ⚠️ **Nota final:** Este proyecto es educativo, de demostración y se encuentra en desarrollo.  
+> No está pensado para uso comercial ni producción; se incluyen limitaciones intencionadas para mantener la implementación clara y enfocada en la lógica técnica.
