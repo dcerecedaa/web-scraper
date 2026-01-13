@@ -171,20 +171,6 @@ El código sigue recibiendo mejoras y actualizaciones.
 
 ---
 
-## ⚠️ Disclaimer
-
-Este scraper es educativo y demostrativo.
-Respeta siempre los términos de servicio de los sitios web y el archivo `robots.txt`.
-
----
-
-## 📜 Derechos de Uso
-
-Todo el código está disponible únicamente con fines educativos y demostrativos.
-No se permite su uso comercial ni fuera de aprendizaje.
-
----
-
 ## 👨‍💻 Autor
 
 **David Cereceda Pérez**  
