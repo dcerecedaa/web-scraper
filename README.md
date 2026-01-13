@@ -107,29 +107,6 @@ MAX_PRODUCTS_PER_CATEGORY=100
 MAX_CATEGORIES=50
 ```
 
-### Añadir Nuevas Marcas
-
-Edita `scraper/config.py` y añade la configuración de la marca:
-
-```python
-BRAND_CONFIGS = {
-    'tutienda.com': {
-        'name': 'Tu Tienda',
-        'categories': {
-            'Mujer': ['/mujer/abrigos', '/mujer/pantalones'],
-            'Hombre': ['/hombre/abrigos', '/hombre/pantalones']
-        },
-        'selectors': {
-            'product_card': '.product-item',
-            'product_name': 'h3.title',
-            'product_price': '.price',
-            'product_link': 'a.product-link',
-            'product_image': 'img.product-img',
-        }
-    }
-}
-```
-
 ---
 
 ## 📊 Formato del CSV
@@ -149,7 +126,7 @@ BRAND_CONFIGS = {
 ## 🛠️ Solución de Problemas
 
 **No se encuentran productos:**
-- Verifica que la URL apunte a una sección/categoría específica.
+- Verifica que la URL apunte a una sección/categoría específica, por ejemplo, "https://la-tienda.com/collections/pantalones"
 - Algunos sitios bloquean scrapers → prueba `HEADLESS=false` en `.env`.
 - Revisa los logs en `logs/scraper_XXXXXX.log`.
 
