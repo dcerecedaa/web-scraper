@@ -16,7 +16,7 @@ Scraper inteligente y universal que funciona con **tiendas online** utilizando d
 - 🎯 **Configuración Híbrida**: Usa configuraciones específicas cuando están disponibles.
 - 🔄 **Manejo de JavaScript**: Usa Playwright para sitios dinámicos.
 - 💾 **Almacenamiento Inteligente**: Guarda datos crudos y procesados.
-- 🏷️ **Categorización**: Organiza por categoría (Abrigos, Pantalones, etc.).
+- 🏷️ **Categorización**: Organiza por género (Hombre, Mujer) y por categoría (Abrigos, Pantalones, etc.).
 - 📊 **Dashboard Interactivo**: Visualiza y analiza los productos scrapeados.
 
 ---
@@ -168,20 +168,6 @@ logs/scraper_YYYYMMDD_HHMMSS.log
 
 Este proyecto está abierto a sugerencias y feedback.
 El código sigue recibiendo mejoras y actualizaciones.
-
----
-
-## ⚠️ Disclaimer
-
-Este scraper es educativo y demostrativo.
-Respeta siempre los términos de servicio de los sitios web y el archivo `robots.txt`.
-
----
-
-## 📜 Derechos de Uso
-
-Todo el código está disponible únicamente con fines educativos y demostrativos.
-No se permite su uso comercial ni fuera de aprendizaje.
 
 ---
 
