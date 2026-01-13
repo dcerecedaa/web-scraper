@@ -16,7 +16,7 @@ Scraper inteligente y universal que funciona con **tiendas online** utilizando d
 - 🎯 **Configuración Híbrida**: Usa configuraciones específicas cuando están disponibles.
 - 🔄 **Manejo de JavaScript**: Usa Playwright para sitios dinámicos.
 - 💾 **Almacenamiento Inteligente**: Guarda datos crudos y procesados.
-- 🏷️ **Categorización**: Organiza por género (Hombre/Mujer) y categoría (Abrigos, Pantalones, etc.).
+- 🏷️ **Categorización**: Organiza por categoría (Abrigos, Pantalones, etc.).
 - 📊 **Dashboard Interactivo**: Visualiza y analiza los productos scrapeados.
 
 ---
