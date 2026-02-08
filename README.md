@@ -5,7 +5,7 @@ Scraper inteligente y universal que funciona con **tiendas online** utilizando d
 > ⚠️ **Nota:** Este proyecto es una demostración de habilidades técnicas y lógica aplicada.  
 > No pretende ser un sistema de scraping profesional ni listo para producción.
 > Actualmente sigue en desarrollo y algunas marcas conocidas como H&M o Zara no funcionan debido a protecciones anti-scraping.  
-> Funciona mejor con tiendas menos bloqueadas o e-commerce basados en Shopif
+> Funciona mejor con tiendas menos bloqueadas o e-commerce basados en Shopify
 
 ---
 
